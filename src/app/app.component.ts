@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { timer } from 'rxjs';
+import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
+
 
 @Component({
   selector: 'app-root',
@@ -8,21 +10,39 @@ import { timer } from 'rxjs';
 })
 export class AppComponent {
   title = 'gsw-angular';
-  currentDate!: string;
+  // currentDate!: string;
+  // currentSecondaryDate!: string;
+  chosenOne = "";
+  isSubmitted = true;
+  public username = "admin";
+  public password = "admin";
+  public confirmPassword = "";
+  public hellooo = "hali";
 
-  constructor(){}
+
+  loginForm: any;
+
+  constructor(private fb: FormBuilder){}
 
   ngOnInit(): void{
-    timer(0, 1000).subscribe(() => {
-      this.changeBackgroundColor();
-    })
+
+    this.loginForm = this.fb.group({
+      username: [this.username, [Validators.required, Validators.minLength(3)]],
+      password: [this.password],
+      confirmPassword: [this.confirmPassword]
+    });
+
   }
 
-
-  changeBackgroundColor(){
-    // A hátteret dinamikusan változtatjuk. Jelen idő pl 12:10:20 -> plusz mindegyik értékhez 40-et hozzáadunk, hogy élénkebb színeket kapjunk.
-    // A példa időnk 12:10:20 így 52:50:60 lenne, ebből egy hexadecimális 6 jegyű számot kapunk, #-el ellátjuk és kész a színkód: #525060.
-    this.currentDate = "#" + (new Date().getHours()+40).toString() + (new Date().getMinutes()+40).toString() + (new Date().getSeconds()+40).toString();
+  forgetPassword(){}
+  onSubmit(){
+    if(this.chosenOne === "Regisztráció") return alert("Regisztráció jelenleg nem elérhető. Jelentkezz be a következő adatokkal: user: 'admin' és pass: 'admin'");
+    if(this.chosenOne === "")
+    {
+      if(this.username !== "admin") return alert("Felhasználható nem található.");
+      if(this.password !== "admin") return alert("Jelszó nem megfelelő.");
+      return this.isSubmitted = true;
+    }
   }
 
 }
