@@ -1,7 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { timer } from 'rxjs';
-import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
-
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -9,40 +6,5 @@ import { FormBuilder, Validators, FormGroup, FormArray } from '@angular/forms';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'gsw-angular';
-  // currentDate!: string;
-  // currentSecondaryDate!: string;
-  chosenOne = "";
-  isSubmitted = true;
-  public username = "admin";
-  public password = "admin";
-  public confirmPassword = "";
-  public hellooo = "hali";
-
-
-  loginForm: any;
-
-  constructor(private fb: FormBuilder){}
-
-  ngOnInit(): void{
-
-    this.loginForm = this.fb.group({
-      username: [this.username, [Validators.required, Validators.minLength(3)]],
-      password: [this.password],
-      confirmPassword: [this.confirmPassword]
-    });
-
-  }
-
-  forgetPassword(){}
-  onSubmit(){
-    if(this.chosenOne === "Regisztráció") return alert("Regisztráció jelenleg nem elérhető. Jelentkezz be a következő adatokkal: user: 'admin' és pass: 'admin'");
-    if(this.chosenOne === "")
-    {
-      if(this.username !== "admin") return alert("Felhasználható nem található.");
-      if(this.password !== "admin") return alert("Jelszó nem megfelelő.");
-      return this.isSubmitted = true;
-    }
-  }
-
+  constructor(){}
 }

@@ -1,0 +1,23 @@
+<div *ngIf="canShowData" class="container-fluid d-flex m-0 p-0 flex-wrap" style="min-height:100vh">
+    <h1 class="rating-question text-uppercase">Melyiknek nagyobb az értékelése?</h1>
+    <div class="image-container left-side">
+      <img id="imageLeft" src="{{gameData[showThis].background_image}}"/>
+      <div class="title-container text-center text-uppercase">
+        <h2 class="image-title">{{gameData[showThis].name}}</h2>
+        <h1 class="image-title text-danger">{{gameData[showThis].rating}}</h1>
+      </div>
+    </div>
+    <div class="image-container right-side">
+      <img id="imageRight" src="{{gameData[showThisToo].background_image}}"/>
+      <div class="title-container text-center text-up text-uppercase">
+        <h2 class="image-title">{{gameData[showThisToo].name}}</h2>
+        <button class="btn btn-primary">Nagyobb</button>
+        <button class="btn btn-secondary">Kisebb</button>
+      </div>
+    </div>
+</div>
+
+<div *ngIf="!canShowData"  class="d-flex align-items-center justify-content-center bg-dark" style="min-height: 100vh">
+  <img class="loading" src="https://media3.giphy.com/media/vbeNMLuswd7RR25lah/giphy.gif?cid=790b761177b8ceee461ec89e768e1de1d32fc92df7c45398&rid=giphy.gif&ct=g"/>
+</div>
+    
