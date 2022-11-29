@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Nerko+One&family=Roboto&family=Work+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Nerko+One&family=Roboto&family=Work+Sans&display=swap');
+
+button:focus{
+    box-shadow: none;
+}
 
 img{
     height: 100vh;
@@ -6,7 +10,7 @@ img{
     object-fit: cover;
 }
 
-img.loading{
+img.loading, img.error{
     height: 100vh;
     width: 100%;
     object-fit: fill;
@@ -15,8 +19,10 @@ img.loading{
 .image-container{
     position: relative;
     height: 50vh;
+    max-height: 50vh;
     width: 100%;
     display: block;
+    overflow: hidden;
 }
 
 .image-container::before{
@@ -37,16 +43,36 @@ img.loading{
     color: white;
 }
 
+.score-container{
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+}
+
+.score-counter{
+    font-family: "Anton", sans-serif;
+    font-size: 1rem;
+}
 
 h1{
-    font-size: 2rem!important;
+    font-size: 2.5rem!important;
     font-family: "Oswald", sans-serif;
+    width: 95%;
+    margin: auto;
 }
 
 h2{
-    font-size: 1.3rem!important;
+    font-size: 2rem!important;
     font-family: "Nerko One", sans-serif;
     font-style: italic;
+}
+
+h3{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem!important;
 }
 
 h1.rating-question{
@@ -56,25 +82,58 @@ h1.rating-question{
     transform: translateX(-50%) translateY(-50%);
     color: white;
     z-index: 99;
-    width: max-content;
+    width: 95%;
 }
 
+
+.answer-button{
+    font-family: "Anton", sans-serif;
+    width: 425px;
+}
+
+.answer-button:first-of-type{
+    margin-bottom: .5rem!important;
+}
+
+/* MOBILE L */
+@media(min-width: 425px)
+{
+    h1{
+        font-size: 3.5rem!important;
+    }
+
+    h2{
+        font-size: 3rem!important;
+    }
+}
+
+/* TABLET */
 @media(min-width: 768px)
 {
     .image-container{
         height: 100vh;
         width: 50%;
+        max-height: unset;
     }
 
+    h1{
+        font-size: 4.5rem!important;
+    }
+
+    h2{
+        font-size: 4rem!important;
+    }
+}
+
+/* LAPTOP | DESKTOP */
+@media(min-width: 1280px)
+{
     h1{
         font-size: 5rem!important;
     }
 
     h2{
-        font-size: 3.5rem!important;
+        font-size: 4.5rem!important;
     }
     
-    h3{
-        font-size: 5rem!important;
-    }
 }

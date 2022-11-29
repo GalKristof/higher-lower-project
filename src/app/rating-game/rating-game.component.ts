@@ -9,47 +9,113 @@ import { GameData } from '../models/game.model';
 
 export class RatingGameComponent {
     
-  _url = "https://api.rawg.io/api/games?key=883218e761854fcca6bc086a40ce5485";
-  _gameData: GameData[] = [];
+  _url = "https://api.rawg.io/api/games?page_size=40&key=883218e761854fcca6bc086a40ce5485";
+  gameData: GameData[] = [];
   canShowData = false;
+  gotError = false;
+  gameType = "rating";
+  currentScore = 0;
   
   ngOnInit(): void{
     this.getGames();
   }
-  gameData: GameData[] = [];
   
-  alreadyGeneratedNumbers = [];
-  showThis: number = 0;
-  showThisToo: number = 0;
-  generateNumbers(length: number)
+  alreadyGeneratedNumbers: number[] = [];
+  leftElement!: GameData;
+  rightElement!: GameData;
+  generateElements(length: number)
   {
-    this.showThis = Math.floor(Math.random() * length);
-    this.showThisToo = this.showThis;
-    while(this.showThisToo === this.showThis)
-    {
-      this.showThisToo = Math.floor(Math.random() * length);
-    }
+    // Legeneráljuk az első két számot, úgy, hogy biztosak legyünk benne, hogy két azonos szám ne keletkezzen.
+    // Eközben a már legenerált számokat eltároljuk, hogy később ellenőrizni tudjuk azokat, hiszen
+    // nem szeretnénk, hogy megjelenjen egy játék újra a későbbiekben.
+    let firstGeneratedNumber = Math.floor(Math.random() * length);
+    this.alreadyGeneratedNumbers.push(firstGeneratedNumber);
+    let secondGeneratedNumber = Math.floor(Math.random() * length);
+    while(this.alreadyGeneratedNumbers.includes(secondGeneratedNumber)) secondGeneratedNumber = Math.floor(Math.random() * this.gameData.length);
+    this.alreadyGeneratedNumbers.push(secondGeneratedNumber);
 
-    console.log(this.showThis + " and " + this.showThisToo)
-
+    // Az így legenerált számok segítségével pedig betudjuk állítani a legelső két elemet.
+    this.leftElement = this.gameData[firstGeneratedNumber];
+    this.rightElement = this.gameData[secondGeneratedNumber];
   }
+  
 
   async getGames()
   {
+    // Lekérdezzük az API adatokat, ha megfelelő a reakció, akkor elindítjuk az adatok feldolgozását, egyébként hibaüzenetet kapunk válaszul.
     fetch(this._url)
     .then(response => response.json())
-    .then(data => this.processData(data.results));
+    .then(data => this.processData(data.results))
+    .catch(() =>
+    {
+      this.apiError();
+      throw new Error("Something went wrong with API.");
+    });
   }
 
   processData(datas: any)
   {
+    // Feldolgozzuk az adatokat. A beérkezett adatokat feltöltjük a tömbünkbe.
     for(let data of datas)
     {
       this.gameData.push(data);
     }
-    this.generateNumbers(this.gameData.length);
-    this.canShowData = true;
 
+    console.log(this.gameData.length);
+
+    // Legeneráljuk az első két számot ami szükség lesz a játékhoz.
+    this.generateElements(this.gameData.length);
+
+    // Aktiváljuk a 'canShowData' változót -> ez kikapcsolja a 'loading' animációt az elején és betölti a játékot, mivel ebben a pillanatban már biztos, hogy van elég adatunk.
+    this.canShowData = true;
+  }
+
+  submitAnswer(bigger: boolean)
+  {
+    // bigger = A játékos által beérkezett interakció. True érték esetén nagyobbra nyomott, false érték esetén a kisebbre.
+    if(bigger)
+    {
+      // ha nagyobbra nyomott és eltalálta (tehát a jobb oldali érték nagyobb, vagy egyenlő a bal oldali értékkel) akkor menjen tovább, egyébként fejezze be a játékot
+      if(this.rightElement.rating >= this.leftElement.rating) return this.goNext();
+      return this.endGame();
+    }
+    // ugyan az, mint az előbb, csak a kisebbre nyomott interakció
+    if(this.rightElement.rating <= this.leftElement.rating) return this.goNext();
+    return this.endGame(); 
+  }
+
+  goNext()
+  {
+    // Növeljük a pontszámot, mert eltalálta.
+    this.currentScore++;
+
+    // Legenerálunk egy új számot, majd addig generáljuk újra, amíg biztosak vagyunk abban, hogy ez egy olyan számot fog eredményezni, amellyel korábban még nem dolgoztunk.
+    // A generálás során ügyelünk arra, hogy ne lépjük túl a tömb határait, különben egy örök while ciklus indulna el.
+    // Ha a tömb határát elértük, akkor a játékos megnyeri a játékot.
+    if(this.currentScore === this.gameData.length-1) return this.wonTheGame();
+
+    let generateNewNumber = Math.floor(Math.random() * this.gameData.length);
+    while(this.alreadyGeneratedNumbers.includes(generateNewNumber)) generateNewNumber = Math.floor(Math.random() * this.gameData.length);
+    this.alreadyGeneratedNumbers.push(generateNewNumber);
+
+    // A bal oldali elem lesz a korábbi jobb oldali elem, míg a jobb oldalra egy újabb elemet generálunk.
+    this.leftElement = this.rightElement;
+    this.rightElement = this.gameData[Math.floor(Math.random() * this.gameData.length)];
+  }
+
+  endGame()
+  {
+    console.log("end of game");
+  }
+
+  apiError()
+  {
+    this.gotError = true;
+  }
+
+  wonTheGame()
+  {
+    console.log("nyerté bics");
   }
 
 }
