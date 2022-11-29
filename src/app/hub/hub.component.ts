@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-hub',
@@ -6,5 +8,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./hub.component.css']
 })
 export class HubComponent {
+
+  constructor(private router: Router, private login: LoginComponent){};
+
+  ngOnInit():void {
+    console.log(this.login.SubmitValue);
+    if(!this.login.SubmitValue) this.navigateBackToHomePage();
+    else this.router.navigateByUrl('/dashboard')
+  }
+
+
+  navigateBackToHomePage()
+  {
+    this.router.navigateByUrl('/login');
+  }
 
 }

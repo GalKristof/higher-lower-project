@@ -29,9 +29,9 @@ export class TheGameComponent {
   gameType = "rating";
   currentScore = 0;
   
-  show = false;
+  statusOfShowExtraPoint = false;
   get showExtraPoint(){
-    return this.show ? 'show' : 'hide';
+    return this.statusOfShowExtraPoint ? 'show' : 'hide';
   }
   
   ngOnInit(): void{
@@ -106,15 +106,16 @@ export class TheGameComponent {
   {
     // Növeljük a pontszámot, mert eltalálta, illetve elindítjuk a +1 pont animációját.
     this.currentScore++;
-    this.show = true;
+    this.statusOfShowExtraPoint = true;
     setTimeout(() => {
-      this.show = false;
+      this.statusOfShowExtraPoint = false;
     }, 200+650) // 200ms = animáció bejövetele & 650ms = eddig marad látható a pontszám, ezt követően eltűnik. 
 
     // Legenerálunk egy új számot, majd addig generáljuk újra, amíg biztosak vagyunk abban, hogy ez egy olyan számot fog eredményezni, amellyel korábban még nem dolgoztunk.
     // A generálás során ügyelünk arra, hogy ne lépjük túl a tömb határait, különben egy örök while ciklus indulna el.
     // Ha a tömb határát elértük, akkor a játékos megnyeri a játékot.
-    if(this.currentScore === this.gameData.length-1) return this.wonTheGame();
+    console.log(this.currentScore + " és " + this.gameData.length)
+    if(this.currentScore >= this.gameData.length-1) return this.wonTheGame();
 
     let generateNewNumber = Math.floor(Math.random() * this.gameData.length);
     while(this.alreadyGeneratedNumbers.includes(generateNewNumber)) generateNewNumber = Math.floor(Math.random() * this.gameData.length);

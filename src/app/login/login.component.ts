@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -8,14 +9,17 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class LoginComponent {
   chosenOne = "";
-  isSubmitted = true;
+  
+  isSubmitted = false;
+  get SubmitValue() { return this.isSubmitted };
+  
   public username = "admin";
   public password = "admin";
   public confirmPassword = "";
 
   loginForm: any;
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder, private router: Router){}
 
   ngOnInit(): void{
 
@@ -30,14 +34,17 @@ export class LoginComponent {
   }
 
   forgetPassword(){}
+
   onSubmit(){
     if(this.chosenOne === "Regisztráció") return alert("Regisztráció jelenleg nem elérhető. Jelentkezz be a következő adatokkal: user: 'admin' és pass: 'admin'");
     if(this.chosenOne === "")
     {
       if(this.username !== "admin") return alert("Felhasználható nem található.");
       if(this.password !== "admin") return alert("Jelszó nem megfelelő.");
-      return this.isSubmitted = true;
+      this.isSubmitted = true;
+      return this.router.navigateByUrl('/dashboard');;
     }
   }
+
 
 }
