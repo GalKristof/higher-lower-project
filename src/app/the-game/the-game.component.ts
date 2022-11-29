@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 import { GameData } from '../models/game.model';
 
 @Component({
-  selector: 'app-rating-game',
-  templateUrl: './rating-game.component.html',
-  styleUrls: ['./rating-game.component.css'],
+  selector: 'app-the-game',
+  templateUrl: './the-game.component.html',
+  styleUrls: ['./the-game.component.css'],
   animations: [
     trigger('showExtraPoint', [
       state('show', style({
@@ -20,7 +20,7 @@ import { GameData } from '../models/game.model';
   ]
 })
 
-export class RatingGameComponent {
+export class TheGameComponent {
     
   _url = "https://api.rawg.io/api/games?page_size=40&key=883218e761854fcca6bc086a40ce5485";
   gameData: GameData[] = [];

@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RatingGameComponent } from './rating-game/rating-game.component';
-import { ReleasedGameComponent } from './released-game/released-game.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { HubComponent } from './hub/hub.component';
+import { TheGameComponent } from './the-game/the-game.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'hub', pathMatch: 'full'},
   { path: 'hub', component: HubComponent},
-  { path: 'ratinggame', component: RatingGameComponent},
-  { path: 'releasedgame', component: ReleasedGameComponent },
+  { path: 'thegame', component: TheGameComponent},
   { path: 'login', component: LoginComponent },
   { path: '**', component: PageNotFoundComponent}
 ];
@@ -20,6 +18,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingComponents = [RatingGameComponent, ReleasedGameComponent, LoginComponent, HubComponent,  PageNotFoundComponent ];
+export const routingComponents = [TheGameComponent, LoginComponent, HubComponent,  PageNotFoundComponent ];
 
 
