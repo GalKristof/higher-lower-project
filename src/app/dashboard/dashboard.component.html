@@ -1,1 +1,137 @@
-<p>dashboard works!</p>
+<div class="container-fluid bg-dark text-white m-0 p-0 position-relative w-100" style="min-height:100vh">
+    <header class="w-100 h-100">
+        <nav class="d-flex justify-content-between bg-danger align-items-center">
+            <div class="left-side d-flex align-items-center justify-content-center">
+                <h4 class="d-inline-block ml-4">
+                    Hello, {{user.username}}!
+                </h4>
+            </div>
+            
+            <div class="right-side d-flex justify-content-center align-items-center">
+                <div class="xp d-inline-block">
+                    <h5 class="mb-0">{{user.userStatistics.xp}}/{{(user.userStatistics.lvl+1)*500}}</h5>
+                    <mat-progress-bar mode="determinate" value="{{user.userStatistics.xp/((user.userStatistics.lvl+1)*500)*100}}"></mat-progress-bar>
+                </div>
+                <div class="lvl d-inline-block ml-4 p-2">
+                    <h5 class="mb-0 lvl">LVL {{user.userStatistics.lvl}}</h5>
+                </div>
+                <div class="exit d-inline-block ml-4 mr-4">
+                    <a title="Kijelentkezés" (click)="logOut()">
+                        <mat-icon class="logout">exit_to_app</mat-icon>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="h-100 w-100">
+        <div class="mt-4 row text-center gap-3 p-3">
+            <div class="col-lg-4">
+                <h2>Felhasználó</h2>
+                <table class="table mt-5">
+                    <tr>
+                        <th>Felhasználónév</th>
+                        <td>{{user.username}}</td>
+                    </tr>
+                    <tr>
+                        <th>E-mail cím</th>
+                        <td>{{user.email}}</td>
+                    </tr>
+                    <tr>
+                        <th>Értékelő-játék pont rekord</th>
+                        <td>{{user.userStatistics.ratingGameTopScore}}</td>
+                    </tr>
+                    <tr>
+                        <th>Kiadott év-játék pont rekord</th>
+                        <td>{{user.userStatistics.releasedGameTopScore}}</td>
+                    </tr>
+                    <tr>
+                        <th>XP</th>
+                        <td>{{user.userStatistics.xp}}</td>
+                    </tr>
+                    <tr>
+                        <th>LVL</th>
+                        <td>{{user.userStatistics.lvl}}</td>
+                    </tr>
+                    <a class="font-italic text-warning pe-auto pass-changer" (click)="ShowChangePassword()">Jelszó megváltoztatása</a>
+                </table>
+
+            </div>
+            <div class="col-lg-4">
+                <h2>Játékok</h2>
+                <mat-card class="bg-transparent">
+                    <mat-card-header>
+                      <mat-card-title>Értékelő-játék</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="mat-card-description text-left">
+                            Az értékelő-játéknál két játékot fogsz látni. Meg kell határoznod,
+                            hogy a bal oldali játék vagy a jobb oldali játék kapott nagyobb értékelést 
+                            egy nyilvánosan elérhető fórumon a játékosoktól.
+                        </p>
+                        <p class="mat-card-description text-left">
+                            Sikeres eltaláláskor a második játék kerül az első helyére, és egy újabb feladványt kapsz, továbbá egy pontot és XP-t.
+                        </p>
+                        <p class="mat-card-description text-left">
+                            A játék célja, hogy minél többet eltalálj és te kerülj a ranglista élére!
+                        </p>
+                    </mat-card-content>
+                    <mat-card-actions>
+                      <button (click)="startGame(0)" mat-button class="btn btn-warning">Játék most</button>
+                    </mat-card-actions>
+                </mat-card>
+                <mat-card class="bg-transparent">
+                    <mat-card-header>
+                      <mat-card-title>Kiadott év-játék</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="mat-card-description text-left">
+                            A Kiadott év-játéknál két játékot fogsz látni. Meg kell határoznod,
+                            hogy a bal oldali játék vagy a jobb oldali játék jelent meg később.
+                        </p>
+                        <p class="mat-card-description text-left">
+                            Sikeres eltaláláskor a második játék kerül az első helyére, és egy újabb feladványt kapsz, továbbá egy pontot és XP-t.
+                        </p>
+                        <p class="mat-card-description text-left">
+                            A játék célja, hogy minél többet eltalálj és te kerülj a ranglista élére!
+                        </p>
+                    </mat-card-content>
+                    <mat-card-actions>
+                      <button (click)="startGame(1)" mat-button class="btn btn-warning">Játék most</button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+            <div class="col-lg-4">
+                <h2>Ranglista</h2>
+                <mat-tab-group animationDuration="2000ms">
+                    <mat-tab label="Értékelő-játék">
+                        <table>
+                            <tr>
+                                <td>asd</td>
+                                <td>asd</td>
+                            </tr>
+                            <tr>
+                                <td>asd</td>
+                                <td>asd</td>
+                            </tr>
+                            <tr>
+                                <td>asd</td>
+                                <td>asd</td>
+                            </tr>
+                            <tr>
+                                <td>asd</td>
+                                <td>asd</td>
+                            </tr>
+                            <tr>
+                                <td>asd</td>
+                                <td>asd</td>
+                            </tr>
+                        </table>
+                    </mat-tab>
+                    <mat-tab label="Kiadott év-játék">Kiadott év-játék</mat-tab>
+                    <mat-tab label="LVL">LVL</mat-tab>
+                    <mat-tab label="XP">XP</mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </main>
+</div>

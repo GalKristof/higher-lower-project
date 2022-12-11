@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&family=Work+Sans&display=swap');
+
+h5.lvl{
+    border: 3px solid black;
+    padding: 10px;
+}
+
+.material-icons.logout{
+    cursor: pointer;
+    font-size: 35px!important;
+    width: 35px;
+    height: 35px;
+}
+
+.pass-changer:hover{
+    cursor: pointer;
+    text-decoration: underline!important;
+}
+
+.mat-card-description{
+    font-family: "Work Sans", sans-serif!important;
+}

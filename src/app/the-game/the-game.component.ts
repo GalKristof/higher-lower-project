@@ -114,7 +114,6 @@ export class TheGameComponent {
     // Legenerálunk egy új számot, majd addig generáljuk újra, amíg biztosak vagyunk abban, hogy ez egy olyan számot fog eredményezni, amellyel korábban még nem dolgoztunk.
     // A generálás során ügyelünk arra, hogy ne lépjük túl a tömb határait, különben egy örök while ciklus indulna el.
     // Ha a tömb határát elértük, akkor a játékos megnyeri a játékot.
-    console.log(this.currentScore + " és " + this.gameData.length)
     if(this.currentScore >= this.gameData.length-1) return this.wonTheGame();
 
     let generateNewNumber = Math.floor(Math.random() * this.gameData.length);
@@ -131,14 +130,14 @@ export class TheGameComponent {
     console.log("end of game");
   }
 
-  apiError()
-  {
-    this.gotError = true;
-  }
-
   wonTheGame()
   {
     console.log("nyerté bics");
+  }
+  
+  apiError()
+  {
+    this.gotError = true;
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginComponent } from '../login/login.component';
+import { UserData } from '../models/user.model';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-hub',
@@ -9,12 +10,17 @@ import { LoginComponent } from '../login/login.component';
 })
 export class HubComponent {
 
-  constructor(private router: Router, private login: LoginComponent){};
+  constructor(private router: Router, private _us: UserService){};
 
   ngOnInit():void {
-    console.log(this.login.SubmitValue);
-    if(!this.login.SubmitValue) this.navigateBackToHomePage();
-    else this.router.navigateByUrl('/dashboard')
+
+    let isThereALoggedUser = false;
+    let users = this._us.getUserArray();
+    if((users.findIndex(n => n.isLoggedIn == true)) !== -1) isThereALoggedUser = true;
+
+    console.log(isThereALoggedUser);
+    if(!isThereALoggedUser) this.navigateBackToHomePage();
+    else this.router.navigateByUrl('/dashboard');
   }
 
 

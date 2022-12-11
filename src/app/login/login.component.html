@@ -1,5 +1,5 @@
 <div class="container-fluid w-100 d-flex align-items-center bg-dark justify-content-center flex-wrap text-white" style="min-height: 100vh">
-    <form *ngIf="!isSubmitted" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidation class="p-5">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidation class="p-5">
       
       <div class="form-container">
         <h1 *ngIf="!chosenOne">Jelentkezz be!</h1>
@@ -9,9 +9,14 @@
           <input [(ngModel)]="username" formControlName="username" type="text" placeholder="&#xf508; Felhasználónév"
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
         </div>
-  
+        
+        <div *ngIf="chosenOne" class="form-group">
+          <input [(ngModel)]="email" formControlName="email" type="email"  placeholder="&#xf084; Email"
+          class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+        </div>
+
         <div class="form-group">
-          <input [ngModel]="password" formControlName="password" type="password" placeholder="&#xf084; Jelszó" 
+          <input [(ngModel)]="password" formControlName="password" type="password" placeholder="&#xf084; Jelszó" 
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
         </div>
   
@@ -20,22 +25,20 @@
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
         </div>
   
-        <button *ngIf="!chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Bejelentkezés</button>
-        <button *ngIf="chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Regisztráció</button>
+        <button [disabled]="!loginForm.valid" *ngIf="!chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Bejelentkezés</button>
+        <button [disabled]="!loginForm.valid" *ngIf="chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Regisztráció</button>
   
         <hr class="border-white"/>
         <a (click)="forgetPassword()" class="text-white">Elfelejtetted a jelszavad?</a>
   
         <button [disabled]="" *ngIf="!chosenOne" class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
-        (click)="chosenOne = 'Regisztráció'" type="button">Új fiók létrehozása</button>
+        (click)="switchChosenOne(true)" type="button">Új fiók létrehozása</button>
   
         <button *ngIf="chosenOne" class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
-        (click)="chosenOne = ''" type="button">Van már fiókom</button>
-  
+        (click)="switchChosenOne(false)" type="button">Van már fiókom</button>
+
       </div>
   
     </form>
-  
-    <h1 class="profile" *ngIf="isSubmitted">Üdv, {{username}}!</h1>
   
   </div>
