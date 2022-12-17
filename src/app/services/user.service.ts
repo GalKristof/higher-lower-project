@@ -13,7 +13,7 @@ export class UserService {
     password: 'admin',
     email: 'admin@admin.com',
     isLoggedIn: true,
-    whichGameIsCurrentlyPlaying: "none",
+    whichGameIsCurrentlyPlaying: "Kiadott év-játék",
     userStatistics: {
       ratingGameTopScore: 30,
       releasedGameTopScore: 10,

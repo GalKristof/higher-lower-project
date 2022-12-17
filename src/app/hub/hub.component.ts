@@ -18,7 +18,6 @@ export class HubComponent {
     let users = this._us.getUserArray();
     if((users.findIndex(n => n.isLoggedIn == true)) !== -1) isThereALoggedUser = true;
 
-    console.log(isThereALoggedUser);
     if(!isThereALoggedUser) this.navigateBackToHomePage();
     else this.router.navigateByUrl('/dashboard');
   }

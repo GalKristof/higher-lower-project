@@ -1,6 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameData } from '../models/game.model';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-the-game',
@@ -33,9 +35,20 @@ export class TheGameComponent {
   get showExtraPoint(){
     return this.statusOfShowExtraPoint ? 'show' : 'hide';
   }
+
+  constructor(private _us: UserService, private router: Router){}
+  users = this._us.getUserArray();
+  loggedInUser = this.users.findIndex(n => n.isLoggedIn == true);
+  currentGame: string = "none";
+  question: string = "";
   
   ngOnInit(): void{
-    this.getGames();
+    if(this.loggedInUser != -1 ) this.currentGame = this.users[this.loggedInUser].whichGameIsCurrentlyPlaying;
+    if(this.loggedInUser == -1 || this.currentGame == "none") this.router.navigateByUrl("/hub");
+    else this.getGames();
+
+    if(this.currentGame == "Értékelő-játék") this.question = "Melyiknek nagyobb az értékelése";
+    if(this.currentGame == "Kiadott év-játék") this.question = "Melyik játékot adták ki később";
   }
   
   alreadyGeneratedNumbers: number[] = [];
@@ -90,15 +103,34 @@ export class TheGameComponent {
 
   submitAnswer(bigger: boolean)
   {
+    let i = 0;
     // bigger = A játékos által beérkezett interakció. True érték esetén nagyobbra nyomott, false érték esetén a kisebbre.
     if(bigger)
     {
-      // ha nagyobbra nyomott és eltalálta (tehát a jobb oldali érték nagyobb, vagy egyenlő a bal oldali értékkel) akkor menjen tovább, egyébként fejezze be a játékot
-      if(this.rightElement.rating >= this.leftElement.rating) return this.goNext();
+      if(this.currentGame == "Értékelő-játék")
+      {
+        // ha nagyobbra nyomott és eltalálta (tehát a jobb oldali érték nagyobb, vagy egyenlő a bal oldali értékkel) akkor menjen tovább, egyébként fejezze be a játékot
+        if(this.rightElement.rating >= this.leftElement.rating) return this.goNext();
+        return this.endGame();
+      }
+      else if(this.currentGame == "Kiadott év-játék")
+      {
+        // mint az eggyel fentebb lévő, csak másik játék, itt a kiadott évet nézzük
+        if(this.rightElement.released >= this.leftElement.released) return this.goNext();
+        return this.endGame();
+      }
+    }
+    if(this.currentGame == "Értékelő-játék")
+    {
+      // ugyan az, mint az előbb, csak a kisebbre nyomott interakció
+      if(this.rightElement.rating <= this.leftElement.rating) return this.goNext();
+    }
+    else if(this.currentGame == "Kiadott év-játék")
+    {        
+      // mint az eggyel fentebb lévő, csak másik játék, itt a kiadott évet nézzük
+      if(this.rightElement.released <= this.leftElement.released) return this.goNext();
       return this.endGame();
     }
-    // ugyan az, mint az előbb, csak a kisebbre nyomott interakció
-    if(this.rightElement.rating <= this.leftElement.rating) return this.goNext();
     return this.endGame(); 
   }
 

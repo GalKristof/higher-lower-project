@@ -1,10 +1,13 @@
 <div *ngIf="canShowData" class="container-fluid d-flex m-0 p-0 flex-wrap position-relative" style="min-height:100vh">
-    <h1 class="rating-question text-uppercase text-center">Melyiknek nagyobb az értékelése?</h1>
+    <h1 class="rating-question text-uppercase text-center">{{question}}?</h1>
     <div class="image-container left-side">
       <img id="imageLeft" src="{{leftElement['background_image']}}"/>
       <div class="title-container text-center text-uppercase">
         <h2 class="image-title">{{leftElement["name"]}}</h2>
-        <h1 class="image-title text-danger">{{leftElement["rating"]}}</h1>
+        <h1 class="image-title text-danger">
+          <span *ngIf="currentGame == 'Értékelő-játék'">{{leftElement["rating"]}}</span>
+          <span *ngIf="currentGame == 'Kiadott év-játék'">{{leftElement["released"]}}</span>
+        </h1>
       </div>
     </div>
     <div class="image-container right-side">

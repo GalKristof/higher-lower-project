@@ -10,8 +10,6 @@ import { UserService } from '../services/user.service';
 })
 export class DashboardComponent {
 
-  igen = true;
-  
   constructor(private _us: UserService, private router: Router){}
   users = this._us.getUserArray();
   loggedInUser = this.users.findIndex(n => n.isLoggedIn == true)
@@ -53,7 +51,8 @@ export class DashboardComponent {
     
   }
 
-  startGame(game: number){
+  startGame(game: number)
+  {
     if(game == 0) this.user.whichGameIsCurrentlyPlaying = "Értékelő-játék";
     if(game == 1) this.user.whichGameIsCurrentlyPlaying = "Kiadott év-játék";
     return this.router.navigateByUrl("/thegame");
