@@ -17,6 +17,9 @@ h5.lvl{
     text-decoration: underline!important;
 }
 
-.mat-card-description{
-    font-family: "Work Sans", sans-serif!important;
+/* Ranglista label szövegének illetve borderének színének átállítása */
+.mdc-tab__text-label,.mdc-tab-indicator__content, .mdc-tab-indicator__content--underline,
+.mat-mdc-tab-header-pagination-chevron{
+    color: white!important;
+    border-color: white!important;
 }

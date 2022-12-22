@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "name": "Értékelő-játék",
+    "paragraphs": [
+      "Az értékelő-játéknál két játékot fogsz látni. Meg kell határoznod, hogy a bal oldali játék vagy a jobb oldali játék kapott nagyobb értékelést egy nyilvánosan elérhető fórumon a játékosoktól.",
+      "Sikeres eltaláláskor a második játék kerül az első helyére, és egy újabb feladványt kapsz, továbbá egy pontot és XP-t.",
+      "A játék célja, hogy minél többet eltalálj és te kerülj a ranglista élére!"
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Kiadott év-játék",
+    "paragraphs": [
+      "A Kiadott év-játéknál két játékot fogsz látni. Meg kell határoznod, hogy a bal oldali játék vagy a jobb oldali játék jelent meg később.",
+      "Sikeres eltaláláskor a második játék kerül az első helyére, és egy újabb feladványt kapsz, továbbá egy pontot és XP-t.",
+      "A játék célja, hogy minél többet eltalálj és te kerülj a ranglista élére!"
+    ]
+  }
+]
+
+  
