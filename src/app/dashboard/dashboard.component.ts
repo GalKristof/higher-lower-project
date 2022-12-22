@@ -49,6 +49,9 @@ export class DashboardComponent {
   // Meghatározzuk, hogy mely oszlopokat jelenítsen meg a ranglista.
   displayedColumns: string[] = ['username', 'ratingGameTopScore'];
 
+  // A "jelszó megváltoztatása" gombra True lesz az értéke, ekkor jelenik meg a jelszó változtatási panel.
+  passwordCurrentlyChanging = false;
+
   ngOnInit(): void{
     this.checkIfLoggedInUserExists();
     this.getGamemodes();
@@ -84,10 +87,10 @@ export class DashboardComponent {
     return this.router.navigateByUrl('/hub')
   }
 
-  // Jelszó megváltoztatása gombra jelenik meg
-  ShowChangePassword()
+  // A jelszó megváltoztatása
+  OnChangePassword()
   {
-    
+
   }
 
   startGame(game: number)
