@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserData } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-
 
 interface GameMode {
   id: number;
@@ -18,14 +17,17 @@ interface GameMode {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 
 export class DashboardComponent {
-  constructor(private _us: UserService, private router: Router, private http: HttpClient, private fb: FormBuilder){}
+  service: any;
+  
+  constructor(private _us: UserService, private router: Router, private http: HttpClient, private fb: FormBuilder, private cd: ChangeDetectorRef){}
   gamemodes: GameMode[] = [];
-
+  
   users = this._us.getUserArray();
   loggedInUser = this.users.findIndex(n => n.isLoggedIn == true)
   user: UserData = {
@@ -42,14 +44,14 @@ export class DashboardComponent {
     }
   };
   
-
+  
   // Azok a tömbök, amik a legjobb játékosokat tartalmazzák.
   // Ez alapján készül a Ranglista.
   bestRatingGamePlayers: UserData[] = [];
   bestReleasedGamePlayers: UserData[] = [];
   bestXpPlayers: UserData[] = [];
   bestLvlPlayers: UserData[] = [];
-  
+
   // Meghatározzuk, hogy mely oszlopokat jelenítsen meg a ranglista.
   displayedColumns: string[] = ['iteration', 'username', 'ratingGameTopScore'];
 
@@ -83,11 +85,14 @@ export class DashboardComponent {
 
   // Legjobb játékosok szortírozása, tulajdonság alapján, TOP 10.
   SortPlayers() {
+    console.log("asd");
     this.bestRatingGamePlayers = this.users.sort((a, b) => b.userStatistics.ratingGameTopScore - a.userStatistics.ratingGameTopScore).slice(0, 10);
     this.bestReleasedGamePlayers = this.users.sort((a, b) => b.userStatistics.releasedGameTopScore - a.userStatistics.releasedGameTopScore).slice(0, 10);
     this.bestLvlPlayers = this.users.sort((a, b) => b.userStatistics.lvl - a.userStatistics.lvl).slice(0, 10);
     this.bestXpPlayers = this.users.sort((a, b) => b.userStatistics.xp - a.userStatistics.xp).slice(0, 10);
+    this.cd.markForCheck();
   }
+
 
   // Ellenőrizzük, hogy létezik-e bejelentkezett felhasználó, amennyiben nem, akkor küldjük vissza az elosztóba.
   CheckIfLoggedInUserExists()

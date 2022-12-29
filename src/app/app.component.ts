@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { UserService } from './services/user.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +9,12 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent {
   
-  constructor(private _us: UserService){}
+  constructor(private _us: UserService, private dc: DashboardComponent){}
 
   ngOnInit()
   {
-    console.log(this._us.generateBotUsers());
+    const simulationIterationTime = 100;
+    this._us.generateBotUsers();
   }
   
 

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { max } from 'rxjs';
 import { UserData } from '../models/user.model';
 
 @Injectable({
@@ -20,14 +19,6 @@ export class UserService {
       releasedGameTopScore: 0,
       xp: 1600,
       lvl: 3
-    }
-  }
-
-  howManyBots = 20;
-  ngOnInit()
-  {
-    for (let i = 0; i < this.howManyBots; i++) {
-      console.log("thismany");
     }
   }
 
@@ -74,33 +65,22 @@ export class UserService {
     return this.users;
   }
 
-  private currentlySimulatingTheBotsPlaying = false;
   simulateBotsPlaying() {
-      if (!this.currentlySimulatingTheBotsPlaying) {
-      this.currentlySimulatingTheBotsPlaying = true;
-      
-      setInterval(() => {
-        const botUsers = this.users.filter((user) => user.username.startsWith('BOT_'));
-        const randomBot = botUsers[Math.floor(Math.random() * botUsers.length)];
-        const maxLevel = 20;
-        let level = 0;
-    
-        while (Math.random() < 0.75 && level < maxLevel) {
-          level += 1;
-        }
-    
-        if (Math.random() < 0.5) {
-          randomBot.userStatistics.releasedGameTopScore = Math.max(randomBot.userStatistics.releasedGameTopScore, level);
-        } else {
-          randomBot.userStatistics.ratingGameTopScore = Math.max(randomBot.userStatistics.ratingGameTopScore, level);
-        }
-    
-        randomBot.userStatistics.xp += level * 15;
-        randomBot.userStatistics.lvl = Math.floor(randomBot.userStatistics.xp / 500);
-
-        console.log(randomBot.userStatistics);
-      }, 2000);
-    }
+    const botUsers = this.users.filter((user) => user.username.startsWith('BOT_'));
+    botUsers.forEach((bot) => {
+      const maxLevel = 20;
+      let level = 0;
+      while (Math.random() < 0.75 && level < maxLevel) {
+        level += 1;
+      }
+      if (Math.random() < 0.5) {
+        bot.userStatistics.releasedGameTopScore = Math.max(bot.userStatistics.releasedGameTopScore, level);
+      } else {
+        bot.userStatistics.ratingGameTopScore = Math.max(bot.userStatistics.ratingGameTopScore, level);
+      }
+      bot.userStatistics.xp += level * 15;
+      bot.userStatistics.lvl = Math.floor(bot.userStatistics.xp / 500);
+    });
   }
 
 }

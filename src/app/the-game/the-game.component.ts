@@ -188,6 +188,9 @@ export class TheGameComponent {
     // jelezzük, hogy vége a játéknak, ezáltal a gombokat kikapcsoljuk
     this.isGameEnded = true;
 
+    // Meghívjuk a botokat, hogy ők is szimuláljanak még egy kört
+    this._us.simulateBotsPlaying();
+
   }
   
   ApiError()
