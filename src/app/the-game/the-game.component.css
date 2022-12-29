@@ -1,22 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Nerko+One&family=Roboto&family=Work+Sans&display=swap');
 
-button:focus{
-    box-shadow: none;
-}
-
-img{
-    height: 100vh;
-    width: 100%;
-    object-fit: cover;
-}
-
 img.loading, img.error{
     height: 100vh;
     width: 100%;
     object-fit: fill;
 }
 
-.image-container{
+.play-container button:focus{
+    box-shadow: none;
+}
+
+.play-container img{
+    height: 100vh;
+    width: 100%;
+    object-fit: cover;
+}
+
+
+.play-container .image-container{
     position: relative;
     height: 50vh;
     max-height: 50vh;
@@ -25,7 +26,7 @@ img.loading, img.error{
     overflow: hidden;
 }
 
-.image-container::before{
+.play-container .image-container::before{
     content: " ";
     position: absolute;
     top: 0;
@@ -35,15 +36,19 @@ img.loading, img.error{
     background-color: rgba(0,0,0,.7);
 }
 
-.title-container{
+.play-container .title-container{
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
 }
 
-.got-point-container{
+.play-container .image-container:first-of-type .title-container{
+    top: 70%;
+}
+
+.play-container .got-point-container{
     width: 120px;
     height: 120px;
     position: absolute;
@@ -56,38 +61,38 @@ img.loading, img.error{
     transform-origin: center;
 }
 
-span.got-point{
+.play-container span.got-point{
     position: absolute;
     top: calc(25% + 30px);
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.score-container{
+.play-container .score-container{
     position: absolute;
     bottom: 1rem;
     left: 1rem;
 }
 
-.score-counter{
+.play-container .score-counter{
     font-family: "Anton", sans-serif;
-    font-size: 1rem;
+    font-size: 2rem;
 }
 
-h1{
-    font-size: 2.5rem!important;
+.play-container h1{
+    font-size: 2rem!important;
     font-family: "Oswald", sans-serif;
     width: 95%;
     margin: auto;
 }
 
-h2{
+.play-container h2{
     font-size: 2rem!important;
     font-family: "Nerko One", sans-serif;
     font-style: italic;
 }
 
-h3{
+.play-container h3{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -95,7 +100,7 @@ h3{
     font-size: 2rem!important;
 }
 
-h1.rating-question{
+.play-container h1.rating-question{
     position: absolute;
     top: 10%;
     left: 50%;
@@ -105,55 +110,122 @@ h1.rating-question{
     width: 95%;
 }
 
-
-.answer-button{
+.play-container .answer-button{
     font-family: "Anton", sans-serif;
-    width: 425px;
+    width: 100%;
+    max-width: 425px;
+    border-radius: 0;
 }
 
-.answer-button:first-of-type{
+.play-container .answer-button:first-of-type{
     margin-bottom: .5rem!important;
 }
+
+
+/* JÁTÉK VÉGE PANEL */
+.won-game-container {
+    position: relative;
+    z-index: 1;
+    min-width: 320px;
+}
+  
+.modal-content {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    width: 75%;
+    filter: brightness(125%);
+}
+
+.won-game-container .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+  
+.won-game-container .btn {
+    width: 100%;
+}
+
+.won-game-container h1{
+    font-size: 2rem;
+}
+
+.won-game-container h2,
+.won-game-container .btn{
+    font-size: 1.5rem;
+}
+  
+  
 
 /* MOBILE L */
 @media(min-width: 425px)
 {
-    h1{
-        font-size: 3.5rem!important;
+    .play-container h1{
+        font-size: 3rem!important;
+    }
+    
+    .play-container h2{
+        font-size: 2.5rem!important;
     }
 
-    h2{
-        font-size: 3rem!important;
+    .play-container .answer-button{
+        border-radius: 0.25rem;
     }
 }
 
 /* TABLET */
 @media(min-width: 768px)
 {
-    .image-container{
+    .play-container .image-container{
         height: 100vh;
-        width: 50%;
+        width: 50%!important;
         max-height: unset;
     }
 
-    h1{
-        font-size: 4.5rem!important;
+    .play-container h1{
+        font-size: 3.5rem!important;
     }
 
-    h2{
-        font-size: 4rem!important;
+    .play-container h2{
+        font-size: 3rem!important;
+    }
+
+    .play-container .title-container, 
+    .image-container:first-of-type .title-container{
+        top: 50%;
+    }
+
+    .won-game-container .btn {
+        width: 50%;
+    }
+
+    .modal-content{
+        width: 50%;
+    }
+
+    .won-game-container h1{
+        font-size: 2.5rem;
+    }
+    
+    .won-game-container h2{
+        font-size: 2rem;
     }
 }
 
 /* LAPTOP | DESKTOP */
 @media(min-width: 1280px)
 {
-    h1{
+    .play-container h1{
         font-size: 5rem!important;
     }
 
-    h2{
+    .play-container h2{
         font-size: 4.5rem!important;
     }
-    
+
+    .won-game-container .btn{
+        font-size: 2rem;
+    }
 }

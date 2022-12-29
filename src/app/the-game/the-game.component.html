@@ -1,23 +1,23 @@
-<div *ngIf="canShowData" class="container-fluid d-flex m-0 p-0 flex-wrap position-relative" style="min-height:100vh">
+<div *ngIf="canShowData && !isGameEnded" class="play-container container-fluid d-flex m-0 p-0 flex-wrap position-relative" style="min-height:100vh">
     <h1 class="rating-question text-uppercase text-center">{{question}}?</h1>
-    <div class="image-container left-side">
+    <div class="image-container left-side w-100">
       <img id="imageLeft" src="{{leftElement['background_image']}}"/>
-      <div class="title-container text-center text-uppercase">
-        <h2 class="image-title">{{leftElement["name"]}}</h2>
+      <div class="title-container text-center text-uppercase w-100">
+        <h2 class="image-title w-100 p-1">{{leftElement["name"]}}</h2>
         <h1 class="image-title text-danger">
           <span *ngIf="currentGame == 'Értékelő-játék'">{{leftElement["rating"]}}</span>
           <span *ngIf="currentGame == 'Kiadott év-játék'">{{leftElement["released"]}}</span>
         </h1>
       </div>
     </div>
-    <div class="image-container right-side">
+    <div class="image-container right-side w-100">
       <img id="imageRight" src="{{rightElement['background_image']}}"/>
-      <div class="title-container text-center text-up text-uppercase">
-        <h2 class="image-title">{{rightElement["name"]}}</h2>
-        <button class="btn btn-success text-uppercase answer-button d-block m-auto" (click)="submitAnswer(true)">
+      <div class="title-container text-center text-up text-uppercase w-100">
+        <h2 class="image-title p-1 w-100">{{rightElement["name"]}}</h2>
+        <button class="btn btn-success text-uppercase answer-button d-block m-auto" [disabled]="isGameEnded" (click)="SubmitAnswer(true)">
           <h1 class="image-title"><i class="fa fa-arrow-up"></i></h1>
         </button>
-        <button class="btn btn-danger text-uppercase answer-button d-block m-auto" (click)="submitAnswer(false)">
+        <button class="btn btn-danger text-uppercase answer-button d-block m-auto" [disabled]="isGameEnded" (click)="SubmitAnswer(false)">
           <h1 class="image-title"><i class="fa fa-arrow-down"></i></h1>
         </button>
       </div>
@@ -30,10 +30,25 @@
     </div>
 </div>
 
-<div *ngIf="!canShowData"  class="d-flex align-items-center justify-content-center bg-dark position-relative" style="min-height: 100vh">
+<div *ngIf="!canShowData && !isGameEnded"  class="container-fluid d-flex align-items-center justify-content-center bg-dark position-relative" style="min-height: 100vh">
   <img *ngIf="!gotError" class="loading" src="https://media3.giphy.com/media/vbeNMLuswd7RR25lah/giphy.gif?cid=790b761177b8ceee461ec89e768e1de1d32fc92df7c45398&rid=giphy.gif&ct=g"/>
   <img *ngIf="gotError" class="error" src="https://media3.giphy.com/media/XIahGhbK5A685fyr8D/giphy.gif?cid=ecf05e47971o6ogm0vyo76i25etx8ttki03jrb495ow5smcn&rid=giphy.gif&ct=g"/>
   <h3 *ngIf="gotError" class="text-danger text-center text-uppercase bg-white p-3">A játék nem tudott lefutni, jelezd a fejlesztőknek!</h3>
 </div>
 
-    
+<div *ngIf="isGameEnded" class="won-game-container container-fluid d-flex align-items-center justify-content-center position-relative w-100 bg-dark" style="min-height: 100vh">
+  <div class="modal-content text-center p-4 bg-dark">
+    <h1 class="text-white mb-4">
+      <span *ngIf="wonTheGame">NYERTÉL!</span>
+      <span *ngIf="!wonTheGame">Game Over!</span>
+    </h1>
+    <h2 class="text-warning mb-4">Eddig jutottál: {{currentScore}}. szint</h2>
+    <h2 class="text-warning mb-4">{{currentXp}} XP-t szereztél.</h2>
+    <div class="buttons w-100 d-flex justify-content-around">
+      <button class="btn btn-success text-uppercase m-1" (click)="EndGameSwitch(true)">Új játék</button>
+      <button class="btn btn-danger text-uppercase m-1" (click)="EndGameSwitch(false)">Dashboard</button>
+    </div>
+  </div>
+</div>
+
+

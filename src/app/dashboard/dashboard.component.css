@@ -23,3 +23,11 @@ h5.lvl{
     color: white!important;
     border-color: white!important;
 }
+
+/* @media(max-width: 1200px)
+{
+    .row{
+        margin-left: 0;
+        margin-right: 0;
+    }
+} */

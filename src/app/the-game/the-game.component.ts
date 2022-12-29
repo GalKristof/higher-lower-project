@@ -30,6 +30,9 @@ export class TheGameComponent {
   gotError = false;
   gameType = "rating";
   currentScore = 0;
+  currentXp = 0;
+  isGameEnded = false;
+  wonTheGame = false;
   
   statusOfShowExtraPoint = false;
   get showExtraPoint(){
@@ -39,13 +42,15 @@ export class TheGameComponent {
   constructor(private _us: UserService, private router: Router){}
   users = this._us.getUserArray();
   loggedInUser = this.users.findIndex(n => n.isLoggedIn == true);
+  currentPlayer = this.users[this.loggedInUser];
+  currentPlayableGames = ["Kiadott év-játék", "Értékelő-játék"];
   currentGame: string = "none";
   question: string = "";
   
   ngOnInit(): void{
-    if(this.loggedInUser != -1 ) this.currentGame = this.users[this.loggedInUser].whichGameIsCurrentlyPlaying;
-    if(this.loggedInUser == -1 || this.currentGame == "none") this.router.navigateByUrl("/hub");
-    else this.getGames();
+    if(this.loggedInUser != -1 ) this.currentGame = this.currentPlayer.whichGameIsCurrentlyPlaying;
+    if(this.loggedInUser == -1 || !this.currentPlayableGames.includes(this.currentPlayer.whichGameIsCurrentlyPlaying)) this.router.navigateByUrl("/hub");
+    else this.GetGames();
 
     if(this.currentGame == "Értékelő-játék") this.question = "Melyiknek nagyobb az értékelése";
     if(this.currentGame == "Kiadott év-játék") this.question = "Melyik játékot adták ki később";
@@ -54,7 +59,7 @@ export class TheGameComponent {
   alreadyGeneratedNumbers: number[] = [];
   leftElement!: GameData;
   rightElement!: GameData;
-  generateElements(length: number)
+  GenerateElements(length: number)
   {
     // Legeneráljuk az első két számot, úgy, hogy biztosak legyünk benne, hogy két azonos szám ne keletkezzen.
     // Eközben a már legenerált számokat eltároljuk, hogy később ellenőrizni tudjuk azokat, hiszen
@@ -71,20 +76,20 @@ export class TheGameComponent {
   }
   
 
-  async getGames()
+  async GetGames()
   {
     // Lekérdezzük az API adatokat, ha megfelelő a reakció, akkor elindítjuk az adatok feldolgozását, egyébként hibaüzenetet kapunk válaszul.
     fetch(this._url)
     .then(response => response.json())
-    .then(data => this.processData(data.results))
+    .then(data => this.ProcessData(data.results))
     .catch(() =>
     {
-      this.apiError();
+      this.ApiError();
       throw new Error("Something went wrong with API.");
     });
   }
 
-  processData(datas: any)
+  ProcessData(datas: any)
   {
     // Feldolgozzuk az adatokat. A beérkezett adatokat feltöltjük a tömbünkbe.
     for(let data of datas)
@@ -92,16 +97,14 @@ export class TheGameComponent {
       this.gameData.push(data);
     }
 
-    console.log(this.gameData.length);
-
     // Legeneráljuk az első két számot ami szükség lesz a játékhoz.
-    this.generateElements(this.gameData.length);
+    this.GenerateElements(this.gameData.length);
 
     // Aktiváljuk a 'canShowData' változót -> ez kikapcsolja a 'loading' animációt az elején és betölti a játékot, mivel ebben a pillanatban már biztos, hogy van elég adatunk.
     this.canShowData = true;
   }
 
-  submitAnswer(bigger: boolean)
+  SubmitAnswer(bigger: boolean)
   {
     let i = 0;
     // bigger = A játékos által beérkezett interakció. True érték esetén nagyobbra nyomott, false érték esetén a kisebbre.
@@ -110,34 +113,35 @@ export class TheGameComponent {
       if(this.currentGame == "Értékelő-játék")
       {
         // ha nagyobbra nyomott és eltalálta (tehát a jobb oldali érték nagyobb, vagy egyenlő a bal oldali értékkel) akkor menjen tovább, egyébként fejezze be a játékot
-        if(this.rightElement.rating >= this.leftElement.rating) return this.goNext();
-        return this.endGame();
+        if(this.rightElement.rating >= this.leftElement.rating) return this.GoNext();
+        return this.EndGame(false);
       }
       else if(this.currentGame == "Kiadott év-játék")
       {
         // mint az eggyel fentebb lévő, csak másik játék, itt a kiadott évet nézzük
-        if(this.rightElement.released >= this.leftElement.released) return this.goNext();
-        return this.endGame();
+        if(this.rightElement.released >= this.leftElement.released) return this.GoNext();
+        return this.EndGame(false);
       }
     }
     if(this.currentGame == "Értékelő-játék")
     {
       // ugyan az, mint az előbb, csak a kisebbre nyomott interakció
-      if(this.rightElement.rating <= this.leftElement.rating) return this.goNext();
+      if(this.rightElement.rating <= this.leftElement.rating) return this.GoNext();
     }
     else if(this.currentGame == "Kiadott év-játék")
     {        
       // mint az eggyel fentebb lévő, csak másik játék, itt a kiadott évet nézzük
-      if(this.rightElement.released <= this.leftElement.released) return this.goNext();
-      return this.endGame();
+      if(this.rightElement.released <= this.leftElement.released) return this.GoNext();
+      return this.EndGame(false);
     }
-    return this.endGame(); 
+    return this.EndGame(false); 
   }
 
-  goNext()
+  GoNext()
   {
     // Növeljük a pontszámot, mert eltalálta, illetve elindítjuk a +1 pont animációját.
     this.currentScore++;
+    this.currentXp += this.currentScore * 15;
     this.statusOfShowExtraPoint = true;
     setTimeout(() => {
       this.statusOfShowExtraPoint = false;
@@ -146,7 +150,7 @@ export class TheGameComponent {
     // Legenerálunk egy új számot, majd addig generáljuk újra, amíg biztosak vagyunk abban, hogy ez egy olyan számot fog eredményezni, amellyel korábban még nem dolgoztunk.
     // A generálás során ügyelünk arra, hogy ne lépjük túl a tömb határait, különben egy örök while ciklus indulna el.
     // Ha a tömb határát elértük, akkor a játékos megnyeri a játékot.
-    if(this.currentScore >= this.gameData.length-1) return this.wonTheGame();
+    if(this.currentScore >= this.gameData.length-1) return this.EndGame(true);
 
     let generateNewNumber = Math.floor(Math.random() * this.gameData.length);
     while(this.alreadyGeneratedNumbers.includes(generateNewNumber)) generateNewNumber = Math.floor(Math.random() * this.gameData.length);
@@ -157,19 +161,53 @@ export class TheGameComponent {
     this.rightElement = this.gameData[Math.floor(Math.random() * this.gameData.length)];
   }
 
-  endGame()
+  EndGame(didWin: boolean)
   {
-    console.log("end of game");
-  }
+    // if didwin == nyert, else == elrontotta és úgy lett vége
+    if(didWin) this.wonTheGame = true;
 
-  wonTheGame()
-  {
-    console.log("nyerté bics");
+    // Beállítjuk az XP, LVL és az új rekordot (ha keletkezett)
+    this.currentPlayer.userStatistics.xp += this.currentXp;
+    this.currentPlayer.userStatistics.lvl = Math.floor(this.currentPlayer.userStatistics.xp / 500);
+    if(this.currentGame == "Értékelő-játék")
+    {
+      if(this.currentPlayer.userStatistics.ratingGameTopScore < this.currentScore)
+      {
+        this.currentPlayer.userStatistics.ratingGameTopScore = this.currentScore;
+      }
+    }
+
+    if(this.currentGame == "Kiadott év-játék")
+    {
+      if(this.currentPlayer.userStatistics.releasedGameTopScore < this.currentScore)
+      {
+        this.currentPlayer.userStatistics.releasedGameTopScore = this.currentScore;
+      }
+    }
+
+    // jelezzük, hogy vége a játéknak, ezáltal a gombokat kikapcsoljuk
+    this.isGameEnded = true;
+
   }
   
-  apiError()
+  ApiError()
   {
     this.gotError = true;
   }
 
+  EndGameSwitch(answer: boolean)
+  {
+    // answer => Replay() || !answer => ReturnToDashboard();
+    this.alreadyGeneratedNumbers = [];
+    this.GenerateElements(this.gameData.length);
+    this.currentScore = 0;
+    this.currentXp = 0;
+    this.wonTheGame = false;
+    this.isGameEnded = false;
+    if(!answer){
+      this.currentGame = "none";
+      this.currentPlayer.whichGameIsCurrentlyPlaying = "none";
+      this.router.navigateByUrl("/dashboard")
+    }
+  }
 }
