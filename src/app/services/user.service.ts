@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { max } from 'rxjs';
 import { UserData } from '../models/user.model';
 
 @Injectable({
@@ -7,12 +8,12 @@ import { UserData } from '../models/user.model';
 export class UserService {
 
   constructor() { }
-
+  
   sysAdminUser: UserData = {
     username: 'admin',
     password: 'admin',
     email: 'admin@admin.com',
-    isLoggedIn: false,
+    isLoggedIn: true,
     whichGameIsCurrentlyPlaying: "none",
     userStatistics: {
       ratingGameTopScore: 0,
@@ -21,46 +22,16 @@ export class UserService {
       lvl: 3
     }
   }
-  users: UserData[] = [this.sysAdminUser, {
-    username: 'BOT_9850',
-    password: 'password7960',
-    email: 'email1185@example.com',
-    isLoggedIn: false,
-    whichGameIsCurrentlyPlaying: 'none',
-    userStatistics: {
-      releasedGameTopScore: 743,
-      ratingGameTopScore: 645,
-      xp: 1678,
-      lvl: 3
-    }
-  },
+
+  howManyBots = 20;
+  ngOnInit()
   {
-    username: 'BOT_4148',
-    password: 'password4202',
-    email: 'email6201@example.com',
-    isLoggedIn: false,
-    whichGameIsCurrentlyPlaying: 'none',
-    userStatistics: {
-      releasedGameTopScore: 535,
-      ratingGameTopScore: 907,
-      xp: 1356,
-      lvl: 2
-    }
-  },
-  {
-    username: 'BOT_3170',
-    password: 'password3160',
-    email: 'email4619@example.com',
-    isLoggedIn: false,
-    whichGameIsCurrentlyPlaying: 'none',
-    userStatistics: {
-      releasedGameTopScore: 10,
-      ratingGameTopScore: 12,
-      xp: 494,
-      lvl: 0
+    for (let i = 0; i < this.howManyBots; i++) {
+      console.log("thismany");
     }
   }
-];
+
+  users: UserData[] = [this.sysAdminUser]
 
   getUserArray()
   {
@@ -70,6 +41,66 @@ export class UserService {
   fillUser(newUser: UserData)
   {
     this.users.push(newUser);
+  }
+
+   generateBotUsers() {
+    let howManyBots = 20;
+    const botNames = ['Adam', 'Ben', 'Charlie', 'Diana', 'Eve', 'Joe', 'Angela', 'Drogo', 'Rebecca', 'Ainsley', 'Darell', 'Lionel', 'Wally', 'Patricia', 'Joan', 'John', 'Smith'];
+   
+    for (let i = 0; i < howManyBots; i++) {
+      const randomName = botNames[Math.floor(Math.random() * botNames.length)];
+      const randomPassword = Math.random().toString(36).substring(2, 15);
+      const username = `BOT_${randomName}${Math.floor(Math.random() * 1000)}`;
+      const email = `bot@${username}.com`;
+  
+      const user: UserData = {
+        username,
+        password: randomPassword,
+        email,
+        isLoggedIn: false,
+        whichGameIsCurrentlyPlaying: "none",
+        userStatistics: {
+          releasedGameTopScore: 0,
+          ratingGameTopScore: 0,
+          xp: 0,
+          lvl: 0,
+        },
+      };
+  
+      this.users.push(user);
+      this.simulateBotsPlaying();
+    }
+  
+    return this.users;
+  }
+
+  private currentlySimulatingTheBotsPlaying = false;
+  simulateBotsPlaying() {
+      if (!this.currentlySimulatingTheBotsPlaying) {
+      this.currentlySimulatingTheBotsPlaying = true;
+      
+      setInterval(() => {
+        const botUsers = this.users.filter((user) => user.username.startsWith('BOT_'));
+        const randomBot = botUsers[Math.floor(Math.random() * botUsers.length)];
+        const maxLevel = 20;
+        let level = 0;
+    
+        while (Math.random() < 0.75 && level < maxLevel) {
+          level += 1;
+        }
+    
+        if (Math.random() < 0.5) {
+          randomBot.userStatistics.releasedGameTopScore = Math.max(randomBot.userStatistics.releasedGameTopScore, level);
+        } else {
+          randomBot.userStatistics.ratingGameTopScore = Math.max(randomBot.userStatistics.ratingGameTopScore, level);
+        }
+    
+        randomBot.userStatistics.xp += level * 15;
+        randomBot.userStatistics.lvl = Math.floor(randomBot.userStatistics.xp / 500);
+
+        console.log(randomBot.userStatistics);
+      }, 2000);
+    }
   }
 
 }
