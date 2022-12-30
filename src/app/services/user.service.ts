@@ -8,21 +8,7 @@ export class UserService {
 
   constructor() { }
   
-  sysAdminUser: UserData = {
-    username: 'admin',
-    password: 'admin',
-    email: 'admin@admin.com',
-    isLoggedIn: true,
-    whichGameIsCurrentlyPlaying: "none",
-    userStatistics: {
-      ratingGameTopScore: 0,
-      releasedGameTopScore: 0,
-      xp: 0,
-      lvl: 0
-    }
-  }
-
-  users: UserData[] = [this.sysAdminUser]
+  users: UserData[] = []
 
   getUserArray()
   {
