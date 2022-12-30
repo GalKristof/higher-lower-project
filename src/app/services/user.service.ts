@@ -17,8 +17,8 @@ export class UserService {
     userStatistics: {
       ratingGameTopScore: 0,
       releasedGameTopScore: 0,
-      xp: 1600,
-      lvl: 3
+      xp: 0,
+      lvl: 0
     }
   }
 

@@ -2,39 +2,87 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidation class="p-5">
       
       <div class="form-container">
-        <h1 *ngIf="!chosenOne">Jelentkezz be!</h1>
-        <h1 *ngIf="chosenOne">Regisztrálj be!</h1>
-  
-        <div class="form-group">
-          <input [(ngModel)]="username" formControlName="username" type="text" placeholder="&#xf508; Felhasználónév"
-          class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+
+        <div class="alert alert-danger" role="alert" *ngIf="!this.loginForm.touched && !this.loginForm.dirty && 
+        (usernameInUse || emailInUse || passwordNotCorrect || usernameNotCorrect)">
+          <h5 class="m-0 p-0 error-message" *ngIf="usernameInUse">Felhasználónév foglalt.</h5>
+          <h5 class="m-0 p-0 error-message" *ngIf="usernameNotCorrect">Felhasználó nem található ezzel a névvel.</h5>
+          <h5 class="m-0 p-0 error-message" *ngIf="emailInUse">E-mail cím foglalt.</h5>
+          <h5 class="m-0 p-0 error-message" *ngIf="passwordNotCorrect">Jelszó nem megfelelő.</h5>
         </div>
         
-        <div *ngIf="chosenOne" class="form-group">
-          <input [(ngModel)]="email" formControlName="email" type="email"  placeholder="&#xf084; Email"
+        <div class="alert alert-success" role="alert" *ngIf="!this.loginForm.touched && !this.loginForm.dirty && registrationDone">
+          <h5 class="m-0 p-0" *ngIf="registrationDone">Sikeres regisztráció!</h5>
+        </div>
+
+        <h1 *ngIf="chosenOne === 'Bejelentkezés'">Jelentkezz be!</h1>
+        <h1 *ngIf="chosenOne === 'Regisztráció' ">Regisztrálj be!</h1>
+
+  
+        <div class="form-group">
+          <input formControlName="username" type="text" placeholder="&#xf508; Felhasználónév"
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+          <div class="username-errors error-group">
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['username'].touched && loginForm.controls['username'].hasError('required')">Felhasználónév megadása kötelező.</p>
+
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['username'].touched && loginForm.controls['username'].hasError('minlength')">Felhasználónév minimum 5 karakter hosszú kell legyen.</p>
+
+            <p class="error-message text-danger mt-1" 
+            *ngIf="!loginForm.controls['username'].hasError('minlength') && loginForm.controls['username'].hasError('pattern')">
+            Felhasználónév nem tartalmazhatja a 'BOT' kifejezést.</p>
+          </div>
+        </div>
+        
+        <div *ngIf="chosenOne === 'Regisztráció'" class="form-group">
+          <input formControlName="email" type="email"  placeholder="&#xf084; Email"
+          class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+          <div class="username-errors error-group">
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['email'].touched && loginForm.controls['email'].hasError('required')">E-mail cím megadása kötelező.</p>
+
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['email'].touched && !loginForm.controls['email'].hasError('required') && 
+            loginForm.controls['email'].invalid">Az email cím nem megfelelő.</p>
+          </div>
         </div>
 
         <div class="form-group">
-          <input [(ngModel)]="password" formControlName="password" type="password" placeholder="&#xf084; Jelszó" 
+          <input formControlName="password" type="password" placeholder="&#xf084; Jelszó" 
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+          <div class="username-errors error-group">
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].hasError('required')">Jelszó megadása kötelező.</p>
+
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['password'].touched && loginForm.controls['password'].hasError('minlength')">A jelszó minimum 5 karakter hosszú kell legyen.</p>
+          </div>
         </div>
   
-        <div *ngIf="chosenOne" class="form-group">
-          <input [(ngModel)]="confirmPassword" formControlName="confirmPassword" type="password"  placeholder="&#xf084; Jelszó megerősítése"
+        <div *ngIf="chosenOne === 'Regisztráció'" class="form-group">
+          <input formControlName="confirmPassword" type="password"  placeholder="&#xf084; Jelszó megerősítése"
           class="form-control rounded-0 bg-transparent border-top-0 border-right-0 border-left-0 border-warning text-white p-2"/>
+          <div class="username-errors error-group">
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['confirmPassword'].touched && loginForm.controls['confirmPassword'].hasError('required')">Jelszó megerősítése kötelező.</p>
+
+            <p class="error-message text-danger mt-1" 
+            *ngIf="loginForm.controls['confirmPassword'].touched && !loginForm.controls['confirmPassword'].hasError('required') && 
+            loginForm.controls['confirmPassword'].invalid">A jelszavak nem egyeznek meg.</p>
+          </div>
         </div>
   
-        <button [disabled]="!loginForm.valid" *ngIf="!chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Bejelentkezés</button>
-        <button [disabled]="!loginForm.valid" *ngIf="chosenOne" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Regisztráció</button>
+        <button [disabled]="!loginForm.valid" *ngIf="chosenOne === 'Bejelentkezés'" class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Bejelentkezés</button>
+        <button [disabled]="!loginForm.valid" *ngIf="chosenOne === 'Regisztráció' " class="btn btn-primary w-100 text-uppercase font-weight-bold" type="submit">Regisztráció</button>
   
         <hr class="border-white"/>
         <a (click)="forgetPassword()" class="text-white">Elfelejtetted a jelszavad?</a>
   
-        <button [disabled]="" *ngIf="!chosenOne" class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
+        <button *ngIf="chosenOne === 'Bejelentkezés'" class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
         (click)="switchChosenOne(true)" type="button">Új fiók létrehozása</button>
   
-        <button *ngIf="chosenOne" class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
+        <button *ngIf="chosenOne === 'Regisztráció' " class="btn btn-info w-100 text-uppercase font-weight-bold d-block mt-2" 
         (click)="switchChosenOne(false)" type="button">Van már fiókom</button>
 
       </div>

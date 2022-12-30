@@ -85,7 +85,6 @@ export class DashboardComponent {
 
   // Legjobb játékosok szortírozása, tulajdonság alapján, TOP 10.
   SortPlayers() {
-    console.log("asd");
     this.bestRatingGamePlayers = this.users.sort((a, b) => b.userStatistics.ratingGameTopScore - a.userStatistics.ratingGameTopScore).slice(0, 10);
     this.bestReleasedGamePlayers = this.users.sort((a, b) => b.userStatistics.releasedGameTopScore - a.userStatistics.releasedGameTopScore).slice(0, 10);
     this.bestLvlPlayers = this.users.sort((a, b) => b.userStatistics.lvl - a.userStatistics.lvl).slice(0, 10);
@@ -104,6 +103,7 @@ export class DashboardComponent {
   // Kijelentkezés
   LogOut()
   {
+    this.user.whichGameIsCurrentlyPlaying = "none";
     this.user.isLoggedIn = false;
     return this.router.navigateByUrl('/hub')
   }

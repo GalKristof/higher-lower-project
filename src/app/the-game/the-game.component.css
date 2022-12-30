@@ -194,7 +194,7 @@ img.loading, img.error{
 
     .play-container .title-container, 
     .image-container:first-of-type .title-container{
-        top: 50%;
+        top: 50%!important;
     }
 
     .won-game-container .btn {

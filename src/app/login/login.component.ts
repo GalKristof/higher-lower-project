@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserData } from '../models/user.model';
 import { UserService } from '../services/user.service';
@@ -10,16 +10,16 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  chosenOne = "";
+  chosenOne = "Bejelentkezés";
    
   get loggedUser() { return this.loggedInUser};
-  
-  public username = "";
-  public email = "";
-  public password = "";
-  public confirmPassword = "";
-  
-  loginForm: any;
+
+  loginForm: FormGroup = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.minLength(5), Validators.pattern(/^((?!BOT).)*$/)]),
+    email: new FormControl(''),
+    password: new FormControl('', [Validators.required, Validators.minLength(5)]),
+    confirmPassword: new FormControl('')
+  });
   
   constructor(private fb: FormBuilder, private router: Router, private _us: UserService){}
   
@@ -27,36 +27,47 @@ export class LoginComponent {
   loggedInUser!: UserData;
   
   ngOnInit(): void{
-    
-    this.loginForm = this.fb.group({
-      username: [this.username, [Validators.required, Validators.minLength(5)]],
-      email: [this.email],
-      password: [this.password, Validators.required],
-      confirmPassword: [this.confirmPassword]
-    });
-
+    // Felhasználók lekérése
     this.users = this._us.getUserArray();
+    const id = this.users.findIndex(n => n.isLoggedIn == true);
+    if(id !== -1) this.router.navigateByUrl('/dashboard');
 
+    // Jelszó változtatása esetén a jelszó egyeztetésének lekérdezése
+    this.loginForm.controls['password'].valueChanges.subscribe(value => {
+      this.loginForm.controls['confirmPassword'].updateValueAndValidity();
+    });
   }
 
   forgetPassword(){}
 
+  usernameInUse = false;
+  usernameNotCorrect = false;
+  emailInUse = false;
+  passwordNotCorrect = false;
+  registrationDone = false;
+
   onSubmit(){
-    
+
+    this.usernameInUse = false;
+    this.usernameNotCorrect = false;
+    this.emailInUse = false;
+    this.passwordNotCorrect = false;
+    this.registrationDone = false;
+
     // Regisztráció
     if(this.chosenOne === "Regisztráció")
     {
 
       // Ellenőrizzük, hogy a felhasználónév vagy az email már használatban van-e, ha igen, akkor nem engedélyezzük a regisztrációt.
-      const isUsernameExists = this.users.findIndex(n => n.username === this.username);
-      if(isUsernameExists !== -1) return alert("Felhasználónév foglalt.")
-      const isEmailExists = this.users.findIndex(n => n.email === this.email);
-      if(isEmailExists !== -1) return alert("E-mail cím foglalt.")
+      const isUsernameExists = this.users.findIndex(n => n.username === this.loginForm.controls['username'].value);
+      if(isUsernameExists !== -1) {this.loginForm.reset(); return this.usernameInUse = true;}
+      const isEmailExists = this.users.findIndex(n => n.email === this.loginForm.controls['email'].value);
+      if(isEmailExists !== -1) {this.loginForm.reset(); return this.emailInUse = true;}
       
       let newUser: UserData = {
-        username: this.username,
-        password: this.password,
-        email: this.email,
+        username: this.loginForm.controls['username'].value,
+        password: this.loginForm.controls['password'].value,
+        email: this.loginForm.controls['email'].value,
         isLoggedIn: false,
         whichGameIsCurrentlyPlaying: "none",
         userStatistics: {
@@ -67,24 +78,26 @@ export class LoginComponent {
         }
       }
       this._us.fillUser(newUser);
-      alert("Regisztráció sikeres! Most már bejelentkezhetsz.")
-      return this.switchChosenOne(false);
+      this.switchChosenOne(false);
+      this.registrationDone = true;
+      return this.loginForm.reset();
     }
       
     
     // Bejelentkezés
-    if(this.chosenOne === "")
+    if(this.chosenOne === "Bejelentkezés")
     {
       // Ellenőrizzük, hogy létezik-e a felhasználó.
-      const i = this.users.findIndex(n => n.username === this.username);
-      console.log(i);
-      if(i === -1) return alert("Felhasználható nem található.")
+      console.log(this.users);
+      console.log(this.loginForm.controls['username'].value as string);
+      const i = this.users.findIndex(n => n.username === this.loginForm.controls['username'].value);
+      if(i === -1) {this.loginForm.reset();return this.usernameNotCorrect = true;}
 
       // Ellenőrizzük, hogy megfelelő-e a jelszó a felhasználóhoz.
-      if(this.users[i].password !== this.password) return alert("Jelszó nem megfelelő.")
-      // this.loggedInUser = this.users[i];
+      if(this.users[i].password !== this.loginForm.controls['password'].value) {this.loginForm.reset();return this.passwordNotCorrect = true;}
 
       this.users[i].isLoggedIn = true;
+      this.loginForm.reset();
       return this.router.navigateByUrl('/dashboard');;
     }
     
@@ -92,13 +105,21 @@ export class LoginComponent {
 
   switchChosenOne(switchedValue: boolean)
   {
+    this.usernameInUse = false;
+    this.usernameNotCorrect = false;
+    this.emailInUse = false;
+    this.passwordNotCorrect = false;
+    this.registrationDone = false;
+
     if(switchedValue) {
       this.chosenOne = "Regisztráció";
       this.loginForm.controls['email'].setValidators([Validators.required, Validators.email]);
-      this.loginForm.controls['confirmPassword'].setValidators([Validators.required]);
+      // A jelszó megerősítésénél elvárjuk, hogy megadja a jelszó megerősítést ÉS meg kell egyeznie a jelszóval.
+      this.loginForm.controls['confirmPassword'].setValidators(Validators.compose([Validators.required, 
+        (control: FormControl) => control.value !== this.loginForm.controls['password'].value ? { samePassword: true } : null]));
      }
      else{
-       this.chosenOne = "";
+       this.chosenOne = "Bejelentkezés";
        this.loginForm.controls['email'].clearValidators();
        this.loginForm.controls['confirmPassword'].clearValidators();
      }
