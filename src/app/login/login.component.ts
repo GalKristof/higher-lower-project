@@ -88,8 +88,6 @@ export class LoginComponent {
     if(this.chosenOne === "Bejelentkezés")
     {
       // Ellenőrizzük, hogy létezik-e a felhasználó.
-      console.log(this.users);
-      console.log(this.loginForm.controls['username'].value as string);
       const i = this.users.findIndex(n => n.username === this.loginForm.controls['username'].value);
       if(i === -1) {this.loginForm.reset();return this.usernameNotCorrect = true;}
 
