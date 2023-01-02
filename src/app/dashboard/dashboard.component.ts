@@ -112,7 +112,7 @@ export class DashboardComponent {
   OnChangePassword()
   {
     // Formba beírt jelenlegi jelszó és felhasználó jelenlegi jelszava egyezik, hívjuk meg a jelszóváltoztatási függvényt
-    if(this.changePasswordForm.controls['currentPassword'].value === this.users[this.loggedInUser].password) return this.ChangeTheUserPassword();
+    if(this.changePasswordForm.controls['currentPassword'].value === this.user.password) return this.ChangeTheUserPassword();
     
     // Egyébként error, sikertelen form küldés.
     this.changePasswordForm.reset();
@@ -122,16 +122,16 @@ export class DashboardComponent {
   ChangeTheUserPassword()
   {
     // A jelszó megváltoztatása
-    this.users[this.loggedInUser].password = this.changePasswordForm.controls['currentPassword'].value as string;
+    this.user.password = this.changePasswordForm.controls['currentPassword'].value as string;
 
     // Form értékek alapértelmezettre állítása
     this.passwordCurrentlyChanging = false;
-    this.passwordChanged = true;
     this.passwordChangeError = false;
     this.changePasswordForm.reset();
-
+    
     // 5 másodpercig kiírunk egy "Sikeres jelszóváltoztatás!" feliratot, majd ezt követően újra megjelenítjük a jelszó megváltoztatása gombot.
-    setTimeout(() => {this.passwordChanged = false;}, 5000);
+    this.passwordChanged = true;
+    setTimeout(() => {this.passwordChanged = false;this.cd.detectChanges();}, 5000);
   }
 
   StartGame(game: number)

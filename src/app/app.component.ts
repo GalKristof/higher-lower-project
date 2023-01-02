@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { UserService } from './services/user.service';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { UserData } from './models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,6 @@ export class AppComponent {
 
   ngOnInit()
   {
-    const simulationIterationTime = 100;
     this._us.generateBotUsers();
   }
   

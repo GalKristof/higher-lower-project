@@ -8,19 +8,20 @@ export class UserService {
 
   constructor() { }
   
+  
   users: UserData[] = []
-
+  
   getUserArray()
   {
     return this.users;
   }
-
+  
   fillUser(newUser: UserData)
   {
     this.users.push(newUser);
   }
-
-   generateBotUsers() {
+  
+  generateBotUsers() {
     let howManyBots = 20;
     const botNames = ['Adam', 'Ben', 'Charlie', 'Diana', 'Eve', 'Joe', 'Angela', 'Drogo', 'Rebecca', 'Ainsley', 'Darell', 'Lionel', 'Wally', 'Patricia', 'Joan', 'John', 'Smith'];
    
@@ -29,7 +30,7 @@ export class UserService {
       const randomPassword = Math.random().toString(36).substring(2, 15);
       const username = `BOT_${randomName}${Math.floor(Math.random() * 1000)}`;
       const email = `bot@${username}.com`;
-  
+      
       const user: UserData = {
         username,
         password: randomPassword,
@@ -43,7 +44,7 @@ export class UserService {
           lvl: 0,
         },
       };
-  
+      
       this.users.push(user);
       this.simulateBotsPlaying();
     }

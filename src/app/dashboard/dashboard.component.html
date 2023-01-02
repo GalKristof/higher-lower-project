@@ -71,6 +71,7 @@
                                 *ngIf="!passwordCurrentlyChanging && !passwordChanged">Jelszó megváltoztatása</a>
                             <a class="font-italic text-warning pe-auto pass-changer" (click)="passwordCurrentlyChanging = !passwordCurrentlyChanging;" 
                                 *ngIf="passwordCurrentlyChanging && !passwordChanged">Mégsem</a>
+                            
                             <h5 *ngIf="passwordChanged" class="text-success">Sikeres jelszóváltoztatás!</h5>
                         </td>
                     </tr>
